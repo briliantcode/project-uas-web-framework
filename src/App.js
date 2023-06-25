@@ -2,11 +2,10 @@ import "./App.css";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import { Route, Routes } from "react-router-dom";
-import SwapiPeople from "./pages/SwapiPeople";
+import Data from "./pages/Data";
 import { ApolloProvider } from "@apollo/client";
 import GraphQLClient from "./api/GraphQLClient";
-import Todo from "./pages/Todo";
-import Pinjam from "./pages/pinjam";
+import Peminjaman from "./pages/Peminjaman";
 
 function App() {
   return (
@@ -14,9 +13,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/swapi-people" element={<SwapiPeople />} />
-        <Route path="/todo" element={<Todo />} />
-        <Route path="/pinjam" element={<Pinjam />} />
+        <Route path="/data" element={<Data />} />
+        <Route path="/peminjaman" element={<Peminjaman />} />
       </Routes>
     </ApolloProvider>
   );

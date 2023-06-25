@@ -1,73 +1,89 @@
+import { useMutation, useQuery } from '@apollo/client';
 import React, { useState } from 'react';
-import Navigation from '../components/Navigation';
+import GET_PEMINJAMAN from '../api/GetPeminjaman';
+import { gql } from "@apollo/client";
 
-function App() {
-  const [id, setid] = useState('');
+const INSERT_PEMINJAMAN = gql`
+  mutation InsertPeminjaman(
+    $judul: String!
+    $peminjam: String!
+    $tglPinjam: String!
+    $tglKembali: String!
+  ) {
+    insert_peminjaman_one(
+      object: {
+        judul: $judul
+        peminjam: $peminjam
+        tglPinjam: $tglPinjam
+        tglKembali: $tglKembali
+      }
+    ) {        
+      id
+      judul
+      peminjam
+      tglPinjam
+      tglKembali
+    }
+  }
+`;
+
+const App = () => {
   const [judul, setJudul] = useState('');
   const [peminjam, setPeminjam] = useState('');
-  const [tanggalPinjam, setTanggalPinjam] = useState('');
-  const [tanggalKembali, setTanggalKembali] = useState('');
+  const [tglPinjam, setTglPinjam] = useState('');
+  const [tglKembali, setTglKembali] = useState('');
+  
+  const {refetch} = useQuery(GET_PEMINJAMAN);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const [addPeminjaman] = useMutation(INSERT_PEMINJAMAN, {
+    onCompleted: () => {
+      refetch();
+    }
+  })
+
+  const handleAdd = () => {
+    if (judul && peminjam && tglPinjam && tglKembali)
     // Logika pemrosesan form, misalnya mengirim data ke server
-    console.log({
-      id,
-      judul,
-      peminjam,
-      tanggalPinjam,
-      tanggalKembali,
+    addPeminjaman({
+      variables: {
+        judul,
+        peminjam,
+        tglPinjam,
+        tglKembali,
+      },
     });
-  };
-
-  const handleReset = () => {
-    setid('');
     setJudul('');
     setPeminjam('');
-    setTanggalPinjam('');
-    setTanggalKembali('');
+    setTglPinjam('');
+    setTglKembali('');
   };
 
   return (
     <div >
-      <Navigation></Navigation>
       <h1 className="text-2xl font-bold mb-4 flex justify-center">Form Peminjaman Buku</h1>
-      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
+      <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
       <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="id">
-            ID Buku
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="id"
-            type="number"
-            placeholder="Masukkan id buku"
-            value={id}
-            onChange={(e) => setid(e.target.value)}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="judul">
             Judul Buku
           </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="judul"
+            id="id"
             type="text"
-            placeholder="Masukkan judul buku"
+            placeholder="Masukkan Judul Buku"
             value={judul}
             onChange={(e) => setJudul(e.target.value)}
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="peminjam">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="judul">
             Nama Peminjam
           </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="peminjam"
+            id="judul"
             type="text"
-            placeholder="Masukkan nama peminjam"
+            placeholder="Masukkan Nama Peminjam"
             value={peminjam}
             onChange={(e) => setPeminjam(e.target.value)}
           />
@@ -79,9 +95,9 @@ function App() {
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="tanggal-pinjam"
-            type="date"
-            value={tanggalPinjam}
-            onChange={(e) => setTanggalPinjam(e.target.value)}
+            type="text"
+            value={tglPinjam}
+            onChange={(e) => setTglPinjam(e.target.value)}
           />
         </div>
         <div className="mb-6">
@@ -91,24 +107,18 @@ function App() {
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="tanggal-kembali"
-            type="date"
-            value={tanggalKembali}
-            onChange={(e) => setTanggalKembali(e.target.value)}
+            type="text"
+            value={tglKembali}
+            onChange={(e) => setTglKembali(e.target.value)}
           />
         </div>
         <div className="flex items-center justify-between">
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
+            type="button"
+            onClick={handleAdd}
           >
             Submit
-          </button>
-          <button
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button"
-            onClick={handleReset}
-          >
-            Reset
           </button>
         </div>
       </form>

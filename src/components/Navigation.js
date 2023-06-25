@@ -10,9 +10,8 @@ function classNames(...classes) {
 function Navigation() {
   const navigation = [
     { name: "Home", href: "/", current: true },
-    { name: "Data Penjaga", href: "/swapi-people", current: false },
-    { name: "Data Buku", href: "/todo", current: false },
-    { name: "Peminjaman", href: "/pinjam", current: false },
+    { name: "Data Peminjaman", href: "/data", current: false },
+    { name: "Peminjaman", href: "/peminjaman", current: false },
   ];
   const location = useLocation();
   return (
